@@ -60,6 +60,7 @@ class Tictactoe:
         score,isTerminal = self.isTerminal(board)
 
         if isTerminal == True:
+
             return score,best_move
 
         if isMax == True:
@@ -70,7 +71,7 @@ class Tictactoe:
                     if board[i][j]== ' ':
                         board[i][j]= 'X'
                         child_score,best_move = self.minimax(board,False)
-                        best_move = [i,j]
+
                         board[i][j] = ' '
                         if child_score > Max_score:
                             best_move = [i,j]
@@ -86,7 +87,7 @@ class Tictactoe:
                     if board[i][j]== ' ':
                         board[i][j]= 'O'
                         child_score,best_move = self.minimax(board, True)
-                        best_move = [i, j]
+
                         board[i][j] = ' '
                         if child_score < Min_score:
                             best_move = [i,j]

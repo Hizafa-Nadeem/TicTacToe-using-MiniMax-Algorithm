@@ -18,9 +18,9 @@ class Tictactoe:
         for row in range(3):
             if (b[row][0] == b[row][1] and b[row][1] == b[row][2]):
                 if (b[row][0] == 'X'):
-                    return 1
+                    return 1,True
                 elif (b[row][0] == 'O'):
-                    return -1
+                    return -1,True
 
         # Checking for Columns for X or O victory.
         for col in range(3):
@@ -28,64 +28,72 @@ class Tictactoe:
             if (b[0][col] == b[1][col] and b[1][col] == b[2][col]):
 
                 if (b[0][col] == 'X'):
-                    return 1
+                    return 1,True
                 elif (b[0][col] == 'O'):
-                    return -1
+                    return -1,True
 
         # Checking for Diagonals for X or O victory.
         if (b[0][0] == b[1][1] and b[1][1] == b[2][2]):
 
             if (b[0][0] == 'X'):
-                return 1
+                return 1,True
             elif (b[0][0] == 'O'):
-                return -1
+                return -1,True
 
         if (b[0][2] == b[1][1] and b[1][1] == b[2][0]):
 
             if (b[0][2] == 'X'):
-                return 1
+                return 1,True
             elif (b[0][2] == 'O'):
-                return -1
+                return -1,True
 
         # Else if none of them have won then return 0
-        return 0
+        return 0,False
 
     def select_best_move(self):
         best_move = [-1,-1]
-        score =self.minimax(self.board,False,best_move)
+        score ,best_move =self.minimax(self.board,False)
         return best_move
-    def minimax(self,board,isMax,best_move):
-        score = self.isTerminal(board)
-        return score,
+
+    def minimax(self,board,isMax):
+        best_move = [-1, -1]
+        score,isTerminal = self.isTerminal(board)
+
+        if isTerminal == True:
+            return score,best_move
 
         if isMax == True:
-            Max_score = 2
+            Max_score = -2
 
             for i in range(3):
                 for j in range(3):
                     if board[i][j]== ' ':
                         board[i][j]= 'X'
-                        child_score=minimax(board,False)
+                        child_score,best_move = self.minimax(board,False)
+                        best_move = [i,j]
                         board[i][j] = ' '
-                        Max_score= max(child_score,Max_score)
-                        if child_score> Max_score:
+                        if child_score > Max_score:
                             best_move = [i,j]
-            return Max_score
+                        Max_score= max(child_score,Max_score)
+
+            return Max_score,best_move
 
         elif isMax == False:
-            Min_score = -2
+            Min_score = 2
 
             for i in range(3):
                 for j in range(3):
                     if board[i][j]== ' ':
                         board[i][j]= 'O'
-                        child_score=minimax(board,True)
+                        child_score,best_move = self.minimax(board, True)
+                        best_move = [i, j]
                         board[i][j] = ' '
-                        Min_score= min(child_score,Min_score)
                         if child_score < Min_score:
                             best_move = [i,j]
+                        Min_score= min(child_score,Min_score)
 
-            return Min_score
+
+            return Min_score,best_move
 
     def display_board(self):
         line =""

@@ -3,12 +3,12 @@ class Tictactoe:
 
     def __init__(self):
         self.board = [[' ', ' ', ' '] for i in range(3)]
+        #self.board = [['X ', 'X ', ' '],['X ', 'O ', ' '],['X ', 'O ', ' ']]
 
-
-    def isMovesLeft(self):
+    def isMovesLeft(self,board):
         for i in range(3):
             for j in range(3):
-                if (self.board[i][j] == ' '):
+                if (board[i][j] == ' '):
                     return True
         return False
 
@@ -52,38 +52,51 @@ class Tictactoe:
 
     def select_best_move(self):
         best_move = [-1,-1]
-        score =self.minimax(self.board,False,best_move)
+        best_score = -2
+
+        for i in range(3):
+            for j in range(3):
+                if self.board[i][j] == ' ':
+                    self.board[i][j]= 'X'
+                    score =self.minimax(self.board,False)
+                    self.board[i][j] = ' '
+
+                    if score > best_score:
+                        best_move = [i,j]
+                        best_score = score
+
         return best_move
-    def minimax(self,board,isMax,best_move):
+
+    def minimax(self,board,isMax):
         score = self.isTerminal(board)
-        return score,
+
+        if self.isMovesLeft(board) == False:
+             return score
 
         if isMax == True:
-            Max_score = 2
+            Max_score = -2
 
             for i in range(3):
                 for j in range(3):
                     if board[i][j]== ' ':
                         board[i][j]= 'X'
-                        child_score=minimax(board,False)
+                        child_score = self.minimax(board,False)
                         board[i][j] = ' '
                         Max_score= max(child_score,Max_score)
-                        if child_score> Max_score:
-                            best_move = [i,j]
+
             return Max_score
 
         elif isMax == False:
-            Min_score = -2
+            Min_score = 2
 
             for i in range(3):
                 for j in range(3):
                     if board[i][j]== ' ':
                         board[i][j]= 'O'
-                        child_score=minimax(board,True)
+                        child_score = self.minimax(board, True)
                         board[i][j] = ' '
                         Min_score= min(child_score,Min_score)
-                        if child_score < Min_score:
-                            best_move = [i,j]
+
 
             return Min_score
 
@@ -95,18 +108,30 @@ class Tictactoe:
                 line += "| " + self.board[i][j] + " |"
             print(line, "\n----------------")
             line = ""
+    def is_Winner(self):
+        score = self.isTerminal(self.board)
+        if score == 1:
+            print("AI wins")
+            return True
+        elif score == -1:
+            print("Human wins")
+            return True
+        else :
+            return False
 
     def play_game(self):
+        flag = False
 
         print("New Game!\n")
         self.display_board()
         turn = input("Which player will make a move: X for AI, O for Human")
-        while self.isMovesLeft() == True:
+        while self.isMovesLeft(self.board ) == True and flag == False :
 
             if turn == 'X':
                 print("AI makes move !")
                 best_move = self.select_best_move()
                 self.board[best_move[0]][best_move[1]] = 'X'
+
                 turn ='O'
             else:
                 cell = int(input("Oye Human! make your move:"))
@@ -115,7 +140,11 @@ class Tictactoe:
 
 
             self.display_board()
-        #AnnounceWinner
+            flag = self.is_Winner()
+
+        if flag == False:
+            print("Tie")
+
 
 if __name__ == '__main__':
 
